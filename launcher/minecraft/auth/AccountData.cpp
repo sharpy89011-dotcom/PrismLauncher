@@ -291,6 +291,8 @@ bool AccountData::resumeStateFromV3(QJsonObject data)
         type = AccountType::MSA;
     } else if (typeS == "Offline") {
         type = AccountType::Offline;
+    } else if (typeS == "Yggdrasil") {
+        type = AccountType::Yggdrasil;
     } else {
         qWarning() << "Failed to parse account data: type is not recognized.";
         return false;
@@ -304,6 +306,26 @@ bool AccountData::resumeStateFromV3(QJsonObject data)
         msaToken = tokenFromJSONV3(data, "msa");
         userToken = tokenFromJSONV3(data, "utoken");
         mojangservicesToken = tokenFromJSONV3(data, "xrp-mc");
+    }
+
+    if (type == AccountType::Yggdrasil) {
+        yggdrasilServerUrl = data.value("ygg-server-url").toString();
+        yggdrasilProviderName = data.value("ygg-provider-name").toString();
+        yggdrasilClientToken = data.value("ygg-client-token").toString();
+        if (yggdrasilServerUrl.isEmpty()) {
+            qWarning() << "Failed to parse account data: Yggdrasil account has no server URL.";
+            return false;
+        }
+    }
+
+    if (type == AccountType::Yggdrasil) {
+        yggdrasilServerUrl = data.value("ygg-server-url").toString();
+        yggdrasilProviderName = data.value("ygg-provider-name").toString();
+        yggdrasilClientToken = data.value("ygg-client-token").toString();
+        if (yggdrasilServerUrl.isEmpty()) {
+            qWarning() << "Failed to parse account data: Yggdrasil account has no server URL.";
+            return false;
+        }
     }
 
     yggdrasilToken = tokenFromJSONV3(data, "ygg");
@@ -335,6 +357,16 @@ QJsonObject AccountData::saveState() const
         tokenToJSONV3(output, mojangservicesToken, "xrp-mc");
     } else if (type == AccountType::Offline) {
         output["type"] = "Offline";
+    } else if (type == AccountType::Yggdrasil) {
+        output["type"] = "Yggdrasil";
+        output["ygg-server-url"] = yggdrasilServerUrl;
+        output["ygg-provider-name"] = yggdrasilProviderName;
+        output["ygg-client-token"] = yggdrasilClientToken;
+    } else if (type == AccountType::Yggdrasil) {
+        output["type"] = "Yggdrasil";
+        output["ygg-server-url"] = yggdrasilServerUrl;
+        output["ygg-provider-name"] = yggdrasilProviderName;
+        output["ygg-client-token"] = yggdrasilClientToken;
     }
 
     tokenToJSONV3(output, yggdrasilToken, "ygg");

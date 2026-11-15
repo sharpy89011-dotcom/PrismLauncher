@@ -129,6 +129,9 @@ class MinecraftAccount : public QObject, public Usable {
             case AccountType::Offline: {
                 return "offline";
             } break;
+            case AccountType::Yggdrasil: {
+                return "yggdrasil";
+            } break;
             default: {
                 return "unknown";
             }

@@ -334,6 +334,9 @@ QVariant AccountList::data(const QModelIndex& index, int role) const
                         case AccountType::Offline: {
                             return tr("Offline", "Account type");
                         }
+                        case AccountType::Yggdrasil: {
+                            return tr("Yggdrasil", "Account type");
+                        }
                     }
                     return tr("Unknown", "Account type");
                 }

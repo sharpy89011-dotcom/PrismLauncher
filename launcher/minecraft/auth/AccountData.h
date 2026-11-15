@@ -88,7 +88,7 @@ struct MinecraftProfile {
     Validity validity = Validity::None;
 };
 
-enum class AccountType { MSA, Offline };
+enum class AccountType { MSA, Offline, Yggdrasil };
 
 enum class AccountState { Unchecked, Offline, Working, Online, Disabled, Errored, Expired, Gone };
 
@@ -110,6 +110,11 @@ struct AccountData {
     Token msaToken;
     Token userToken;
     Token mojangservicesToken;
+
+    // Yggdrasil-compatible third-party provider (Ely.by or custom). Only used when type == Yggdrasil.
+    QString yggdrasilServerUrl;      // auth server base URL, e.g. https://authserver.ely.by/auth
+    QString yggdrasilProviderName;   // display label, e.g. "Ely.by"
+    QString yggdrasilClientToken;    // client token required for refresh/validate
 
     Token yggdrasilToken;
     MinecraftProfile minecraftProfile;
