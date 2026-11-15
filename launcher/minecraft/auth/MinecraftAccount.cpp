@@ -272,7 +272,9 @@ void MinecraftAccount::fillSession(AuthSessionPtr session)
     if (session->uuid.isEmpty())
         session->uuid = uuidFromUsername(session->player_name).toString(QUuid::Id128);
     // 'legacy' or 'mojang', depending on account type
-    session->user_type = typeString();
+    session->user_type = (data.type == AccountType::Yggdrasil) ? QStringLiteral("mojang") : typeString();
+    if (data.type == AccountType::Yggdrasil)
+        session->authlibInjectorApiRoot = data.yggdrasilServerUrl;
     if (!session->access_token.isEmpty()) {
         session->session = "token:" + data.accessToken() + ":" + data.profileId();
     } else {

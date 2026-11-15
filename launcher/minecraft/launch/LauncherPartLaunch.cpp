@@ -35,6 +35,8 @@
 
 #include "LauncherPartLaunch.h"
 
+#include <QFileInfo>
+
 #include <QRegularExpression>
 #include <QStandardPaths>
 
@@ -93,6 +95,18 @@ void LauncherPartLaunch::executeTask()
 
     m_launchScript = instance->createLaunchScript(m_session, m_targetToJoin);
     QStringList args = instance->javaArguments();
+
+    // Third-party (Yggdrasil) accounts need authlib-injector to talk to their auth server in-game.
+    if (m_session && !m_session->authlibInjectorApiRoot.isEmpty()) {
+        const QString injectorPath = APPLICATION->getAuthlibInjectorPath();
+        if (injectorPath.isEmpty() || !QFileInfo::exists(injectorPath)) {
+            const char* reason = QT_TR_NOOP("authlib-injector is missing, so this third-party account cannot join the game.");
+            emit logLine(tr(reason), MessageLevel::Fatal);
+            emitFailed(tr(reason));
+            return;
+        }
+        args.prepend("-javaagent:" + injectorPath + "=" + m_session->authlibInjectorApiRoot);
+    }
     QString allArgs = args.join(" ");
     emit logLine("Java arguments:\n  " + m_parent->censorPrivateInfo(allArgs) + "\n", MessageLevel::Launcher);
 

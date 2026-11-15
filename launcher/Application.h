@@ -159,6 +159,9 @@ class Application : public QApplication {
      */
     QString getJarPath(const QString& jarFile);
 
+    //! Cache location for the downloaded authlib-injector jar (may not exist yet).
+    QString getAuthlibInjectorPath();
+
     QString getMSAClientID();
     QString getFlameAPIKey();
     QString getModrinthAPIToken();

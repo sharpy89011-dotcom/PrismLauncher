@@ -1921,6 +1921,11 @@ QString Application::getJarPath(const QString& jarFile)
     return {};
 }
 
+QString Application::getAuthlibInjectorPath()
+{
+    return FS::PathCombine(m_dataPath, "authlib-injector", "authlib-injector.jar");
+}
+
 QString Application::getMSAClientID()
 {
     QString clientIDOverride = m_settings->get("MSAClientIDOverride").toString();

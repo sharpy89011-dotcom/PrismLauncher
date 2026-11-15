@@ -23,6 +23,8 @@ struct AuthSession {
     QString uuid;
     // 'msa' or 'offline', depending on account type
     QString user_type;
+    // non-empty for Yggdrasil accounts: server URL passed to authlib-injector
+    QString authlibInjectorApiRoot;
     // the actual launch mode for this session
     LaunchMode launchMode;
 };
