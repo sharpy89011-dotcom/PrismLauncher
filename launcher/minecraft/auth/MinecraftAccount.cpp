@@ -113,6 +113,28 @@ QPixmap MinecraftAccount::getFace(int width, int height) const
     return skin.scaled(width, height, Qt::KeepAspectRatio);
 }
 
+MinecraftAccountPtr MinecraftAccount::createYggdrasil(const QString& serverUrl, const QString& providerName)
+{
+    auto account = makeShared<MinecraftAccount>();
+    account->data.type = AccountType::Yggdrasil;
+    account->data.yggdrasilServerUrl = serverUrl;
+    account->data.yggdrasilProviderName = providerName;
+    account->data.yggdrasilClientToken = QUuid::createUuid().toString(QUuid::Id128);
+    return account;
+}
+
+shared_qobject_ptr<AuthFlow> MinecraftAccount::loginYggdrasil(QString username, QString password)
+{
+    Q_ASSERT(m_currentTask.get() == nullptr);
+
+    m_currentTask.reset(new AuthFlow(&data, AuthFlow::Action::Login, std::move(username), std::move(password)));
+    connect(m_currentTask.get(), &Task::succeeded, this, &MinecraftAccount::authSucceeded);
+    connect(m_currentTask.get(), &Task::failed, this, &MinecraftAccount::authFailed);
+    connect(m_currentTask.get(), &Task::aborted, this, [this] { authFailed(tr("Aborted")); });
+    emit activityChanged(true);
+    return m_currentTask;
+}
+
 shared_qobject_ptr<AuthFlow> MinecraftAccount::login(bool useDeviceCode)
 {
     Q_ASSERT(m_currentTask.get() == nullptr);

@@ -86,6 +86,10 @@ class MinecraftAccount : public QObject, public Usable {
     static MinecraftAccountPtr createBlankMSA();
 
     static MinecraftAccountPtr createOffline(const QString& username);
+    static MinecraftAccountPtr createYggdrasil(const QString& serverUrl, const QString& providerName);
+
+    //! Login against a Yggdrasil server. Credentials are passed through and never stored.
+    shared_qobject_ptr<AuthFlow> loginYggdrasil(QString username, QString password);
 
     static MinecraftAccountPtr loadFromJsonV3(const QJsonObject& json);
 
