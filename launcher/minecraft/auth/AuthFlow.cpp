@@ -11,13 +11,14 @@
 #include "minecraft/auth/steps/MinecraftProfileStep.h"
 #include "minecraft/auth/steps/XboxAuthorizationStep.h"
 #include "minecraft/auth/steps/XboxUserStep.h"
+#include "minecraft/auth/steps/YggdrasilAuthenticateStep.h"
 #include "tasks/Task.h"
 
 #include "AuthFlow.h"
 
 #include <Application.h>
 
-AuthFlow::AuthFlow(AccountData* data, Action action) : Task(), m_data(data)
+AuthFlow::AuthFlow(AccountData* data, Action action, QString username, QString password) : Task(), m_data(data)
 {
     if (data->type == AccountType::MSA) {
         if (action == Action::DeviceCode) {
@@ -36,6 +37,9 @@ AuthFlow::AuthFlow(AccountData* data, Action action) : Task(), m_data(data)
         m_steps.append(makeShared<EntitlementsStep>(m_data));
         m_steps.append(makeShared<MinecraftProfileStep>(m_data));
         m_steps.append(makeShared<GetSkinStep>(m_data));
+    } else if (data->type == AccountType::Yggdrasil) {
+        // Login passes credentials; Refresh leaves the password empty and uses the saved token.
+        m_steps.append(makeShared<YggdrasilAuthenticateStep>(m_data, std::move(username), std::move(password)));
     }
     changeState(AccountTaskState::STATE_CREATED);
 }
