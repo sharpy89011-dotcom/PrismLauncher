@@ -575,7 +575,8 @@ void AccountList::setListFilePath(QString path, bool autosave)
 bool AccountList::anyAccountIsValid()
 {
     for (auto account : m_accounts) {
-        if (account->ownsMinecraft()) {
+        // Offline accounts require a Microsoft account that owns the game.
+        if (account->accountType() == AccountType::MSA && account->ownsMinecraft()) {
             return true;
         }
     }
