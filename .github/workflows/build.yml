@@ -68,7 +68,7 @@ jobs:
             vcvars-arch: arm64
             qt-version: 6.11.2
 
-          - os: macos-26
+          - os: macos-15
             artifact-name: macOS
             macosx-deployment-target: 13.0
             qt-version: 6.11.2
