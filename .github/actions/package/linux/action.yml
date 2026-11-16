@@ -16,12 +16,6 @@ inputs:
   qt-version:
     description: Version of Qt to use
     required: true
-  gpg-private-key:
-    description: Private key for AppImage signing
-    required: false
-  gpg-private-key-id:
-    description: ID for the gpg-private-key, to select the signing key
-    required: false
 
 runs:
   using: composite
@@ -67,18 +61,9 @@ runs:
         VERSION: ${{ github.ref_type == 'tag' && github.ref_name || inputs.version }}
         BUILD_DIR: build
         INSTALL_APPIMAGE_DIR: install-appdir
-
-        GPG_PRIVATE_KEY: ${{ inputs.gpg-private-key }}
       run: |
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_APPIMAGE_DIR }}
 
-        if [ '${{ inputs.gpg-private-key-id }}' != '' ]; then
-          echo "$GPG_PRIVATE_KEY" > privkey.asc
-          gpg --import privkey.asc
-          gpg --export --armor ${{ inputs.gpg-private-key-id }} > pubkey.asc
-        else
-          echo ":warning: Skipped code signing for Linux AppImage, as gpg key was not present." >> $GITHUB_STEP_SUMMARY
-        fi
 
         sharun lib4bin \
           --hard-links \

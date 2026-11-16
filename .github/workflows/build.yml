@@ -145,9 +145,6 @@ jobs:
           artifact-name: ${{ matrix.artifact-name }}
           qt-version: ${{ steps.setup-dependencies.outputs.qt-version }}
 
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
-
       - name: Package (macOS)
         if: ${{ runner.os == 'macOS' }}
         uses: ./.github/actions/package/macos
